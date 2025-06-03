@@ -24,7 +24,7 @@ from utils import date_str_in_date, greetings
 def json_answer_main(date):
     answer = {"greeting": greetings(date_str_in_date(date))}
     json_answer = json.dumps(answer, ensure_ascii=False, indent=4)
-    return answer
+    return json_answer
 
 
 if __name__ == "__main__":
