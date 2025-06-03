@@ -28,23 +28,28 @@ def greetings(date) -> str | None:
         print("Время не определено")
 
 
-def read_operations_file() -> list[dict | None]:
+def filter_operations(df_operations: pd.DataFrame) -> list[dict | None]:
+    "Функция выборки необходимых операций"
+    df_status_ok = df_operations[df_operations["Статус"] == "OK"]
+    df_card_number = df_status_ok.groupby("Номер карты")
+    summ_price_by_card = df_card_number["Сумма платежа"].sum()
+    return summ_price_by_card
+    # return df.to_dict(orient="records")
+
+
+def read_excel_file() -> pd.DataFrame:
     "Функция чтения Excel-файла"
     try:
         with open(PATH_OPERATIONS, "rb") as excel_file:
             df = pd.read_excel(excel_file)
-            df = df.where(pd.notnull(df), None)  # Заменяем nan на None
-            df_card_number = df.groupby("Номер карты")
-            summ_price_by_card = df_card_number["Сумма платежа"].sum()
-            return summ_price_by_card
-            # return df.to_dict(orient="records")
+            df = df.where(pd.notnull(df), None)
+            return df
     except (FileNotFoundError, PermissionError) as e:
         print(f"Ошибка при чтении файла {PATH_OPERATIONS}: {str(e)}")
         return []
 
 
 
-
 if __name__ == "__main__":
-    print(read_operations_file())
+    print(filter_operations(read_excel_file()))
     # print(greetings(date_str_in_date('2024-12-12 14:12:12')))
