@@ -12,6 +12,12 @@ def date_str_in_date(date_str: str) -> datetime:
         print("Дата указана неверно. Правильный формат даты YYYY-MM-DD HH:MM:SS")
 
 
+def find_beginning_date(date_end: datetime) -> datetime:
+    "Функция нахождения начального дня фильтрации данных"
+    beginning_date = datetime.datetime(date_end.year, date_end.month, 1, 0, 0, 0)
+    return beginning_date
+
+
 def greetings(date) -> str | None:
     "Функция приветствия в зависимости от входящего времени даты"
     try:
@@ -28,28 +34,28 @@ def greetings(date) -> str | None:
         print("Время не определено")
 
 
-def filter_operations(df_operations: pd.DataFrame) -> list[dict | None]:
+def filter_operations(df_operations: pd.DataFrame, first_date: datetime, last_date: datetime) -> list[dict | None]:
     "Функция выборки необходимых операций"
-    df_status_ok = df_operations[df_operations["Статус"] == "OK"]
-    df_card_number = df_status_ok.groupby("Номер карты")
+    df_status_ok = df_operations[(df_operations["Статус"] == "OK") & (df_operations["Сумма платежа"] <= 0)]
+    df_in_date = df_status_ok[(df_status_ok["Дата операции"] >= first_date) & (df_status_ok["Дата операции"] <= last_date)]
+    df_card_number = df_in_date.groupby("Номер карты")
     summ_price_by_card = df_card_number["Сумма платежа"].sum()
     return summ_price_by_card
-    # return df.to_dict(orient="records")
 
 
-def read_excel_file() -> pd.DataFrame:
+def read_excel_file() -> pd.DataFrame | None:
     "Функция чтения Excel-файла"
     try:
         with open(PATH_OPERATIONS, "rb") as excel_file:
             df = pd.read_excel(excel_file)
             df = df.where(pd.notnull(df), None)
+            df["Дата операции"] = pd.to_datetime(df["Дата операции"], dayfirst=True)
             return df
     except (FileNotFoundError, PermissionError) as e:
         print(f"Ошибка при чтении файла {PATH_OPERATIONS}: {str(e)}")
-        return []
 
 
 
 if __name__ == "__main__":
-    print(filter_operations(read_excel_file()))
-    # print(greetings(date_str_in_date('2024-12-12 14:12:12')))
+    print(filter_operations(read_excel_file(), '2021-12-01 14:12:12', '2021-12-12 14:12:12'))
+    # print(find_beginning_date(date_str_in_date('2024-12-12 14:12:12')))
