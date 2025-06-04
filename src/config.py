@@ -1,6 +1,6 @@
 from pathlib import Path
 
-BASE_DIR = Path(__file__).parent
+BASE_DIR = Path(__file__).parent.parent
 
 PATH_OPERATIONS = BASE_DIR / "data" / "operations.xlsx"
 

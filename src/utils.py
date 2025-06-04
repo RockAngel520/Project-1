@@ -1,6 +1,7 @@
 import datetime
 import pandas as pd
-from config import PATH_OPERATIONS, PATH_SETTINGS
+from config import PATH_OPERATIONS
+import requests
 
 
 def date_str_in_date(date_str: str) -> datetime:
@@ -35,7 +36,7 @@ def greetings(date) -> str | None:
 
 
 def filter_operations(df_operations: pd.DataFrame, first_date: datetime, last_date: datetime) -> list[dict | None]:
-    "Функция выборки необходимых операций"
+    "Функция выборки необходимых операций по картам с общей суммой расходов"
     df_status_ok = df_operations[(df_operations["Статус"] == "OK") & (df_operations["Сумма платежа"] <= 0)]
     df_in_date = df_status_ok[(df_status_ok["Дата операции"] >= first_date) & (df_status_ok["Дата операции"] <= last_date)]
     df_card_number = df_in_date.groupby("Номер карты")
@@ -55,7 +56,22 @@ def read_excel_file() -> pd.DataFrame | None:
         print(f"Ошибка при чтении файла {PATH_OPERATIONS}: {str(e)}")
 
 
+def top_5_transactions(df_operations: pd.DataFrame, first_date: datetime, last_date: datetime) -> list[dict | None]:
+    "Функция выборки топ 5 транзакций по сумме операции"
+    df_status_ok = df_operations[df_operations["Статус"] == "OK"]
+    df_in_date = df_status_ok[(df_status_ok["Дата операции"] >= first_date) & (df_status_ok["Дата операции"] <= last_date)]
+    df_top_5 = df_in_date.sort_values(by="Сумма операции с округлением", ascending=False)
+    return df_top_5.head(5).reset_index()
+
+
+def exchange_rate(currency: str) -> float:
+    url = "https://www.cbr-xml-daily.ru/daily_json.js"
+    response = requests.get(url, timeout=10)
+
+    return response.json()["Valute"][currency]["Value"]
+
 
 if __name__ == "__main__":
-    print(filter_operations(read_excel_file(), '2021-12-01 14:12:12', '2021-12-12 14:12:12'))
+    # print(top_5_transactions(read_excel_file(), '2021-12-01 14:12:12', '2021-12-12 14:12:12'))
     # print(find_beginning_date(date_str_in_date('2024-12-12 14:12:12')))
+    print(exchange_rate("EUR"))
