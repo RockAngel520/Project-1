@@ -65,13 +65,29 @@ def top_5_transactions(df_operations: pd.DataFrame, first_date: datetime, last_d
 
 
 def exchange_rate(currency: str) -> float:
-    url = "https://www.cbr-xml-daily.ru/daily_json.js"
+    "Функция получения курса валюты"
+    url = f"https://api.exchangerate-api.com/v4/latest/{currency}"
     response = requests.get(url, timeout=10)
 
-    return response.json()["Valute"][currency]["Value"]
+    return response.json()["rates"]["RUB"]
+
+
+def get_stocks_price(stock: str) -> float:
+    "Функция получения стоимости акции"
+    url = f"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&month=2009-01&outputsize=full&apikey={}"
+    headers = {"apikey": api_key}
+
+    response = requests.get(url, headers=headers, timeout=10)
+
+    return round(response.json()["result"], 2)
+
+url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&month=2009-01&outputsize=full&apikey=ZY4PVW7T89RVZBJ5'
+r = requests.get(url)
+data = r.json()
+print(data)
 
 
 if __name__ == "__main__":
     # print(top_5_transactions(read_excel_file(), '2021-12-01 14:12:12', '2021-12-12 14:12:12'))
     # print(find_beginning_date(date_str_in_date('2024-12-12 14:12:12')))
-    print(exchange_rate("EUR"))
+    print(exchange_rate("usd"))

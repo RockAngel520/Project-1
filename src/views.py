@@ -2,24 +2,7 @@
 import json
 from config import PATH_SETTINGS
 
-# import requests
-#
-# # replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
-# url = 'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=IBM&interval=5min&month=2009-01&outputsize=full&apikey=ZY4PVW7T89RVZBJ5'
-# r = requests.get(url)
-# data = r.json()
-# print(data)
-#
-#
-#
-# # replace the "demo" apikey below with your own key from https://www.alphavantage.co/support/#api-key
-# url = 'https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE&from_currency=EUR&to_currency=RUB&apikey=ZY4PVW7T89RVZBJ5'
-# r = requests.get(url)
-# data = r.json()
-#
-# print(data)
-
-from utils import date_str_in_date, greetings, filter_operations, read_excel_file, find_beginning_date, top_5_transactions
+from utils import date_str_in_date, greetings, filter_operations, read_excel_file, find_beginning_date, top_5_transactions, exchange_rate
 
 
 def json_answer_main(date: str) -> str:
@@ -36,7 +19,6 @@ def json_answer_main(date: str) -> str:
 
     top_transactions_answer = []
     operations = top_5_transactions(read_excel_file(), first_date, last_date)
-    # print(operations.loc[:, "Дата платежа"])
     for row in range(5):
         top_transactions_answer.append({"date": operations.loc[row, "Дата платежа"],
                                         "amount": operations.loc[row, "Сумма платежа"],
@@ -44,18 +26,27 @@ def json_answer_main(date: str) -> str:
                                         "description": operations.loc[row, "Описание"]})
     top_5_answer = {"top_transactions": top_transactions_answer}
 
+    # currency_exchange_rate = []
+    # with open(PATH_SETTINGS) as file:
+    #     user_settings = json.load(file)
+    # for key in user_settings["user_currencies"]:
+    #     currency_exchange_rate.append({"currency": key,
+    #                                           "rate": exchange_rate(key)})
+    # currency_exchange_rate_answer = {"currency_rates": currency_exchange_rate}
+
     answer = dict()
     answer.update(greeting_answer)
     answer.update(card_answer)
     answer.update(top_5_answer)
+    answer.update(currency_exchange_rate_answer)
 
 
     json_answer = json.dumps(answer, ensure_ascii=False, indent=4)
     return json_answer
 
 
-if __name__ == "__main__":
-    print(json_answer_main('2021-12-12 14:12:12'))
+# if __name__ == "__main__":
+#     print(json_answer_main('2021-12-12 14:12:12'))
 
 
 
