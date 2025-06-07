@@ -43,20 +43,17 @@ def test_find_beginning_date(sample_datetime):
 
 
 # Тесты для greetings
-def test_greetings_morning():
-    assert greetings(datetime(2023, 1, 1, 8, 0)) == "Доброе утро"
-
-
-def test_greetings_evening():
-    assert greetings(datetime(2023, 1, 1, 20, 0)) == "Добрый вечер"
-
-
-def test_greetings_day():
-    assert greetings(datetime(2023, 1, 1, 14, 0)) == "Добрый день"
-
-
-def test_greetings_night():
-    assert greetings(datetime(2023, 1, 1, 2, 0)) == "Доброй ночи"
+@pytest.mark.parametrize(
+    "year, month, day, hour, minute, greeting",
+    [
+        (2023, 1, 1, 8, 0, "Доброе утро"),
+        (2023, 1, 1, 14, 0, "Добрый день"),
+        (2023, 1, 1, 20, 0, "Добрый вечер"),
+        (2023, 1, 1, 2, 0, "Доброй ночи"),
+    ],
+)
+def test_greetings(year, month, day, hour, minute, greeting):
+    assert greetings(datetime(year, month, day, hour, minute)) == greeting
 
 
 def test_greetings_invalid(caplog):

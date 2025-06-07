@@ -100,8 +100,3 @@ def json_simple_search(search_word: str) -> str:
 
     json_answer = json.dumps(answer, ensure_ascii=False, indent=4)
     return json_answer
-
-
-# if __name__ == "__main__":
-#     print(json_answer_main('2021-12-12 14:12:12'))
-#     print(json_simple_search('авиа'))

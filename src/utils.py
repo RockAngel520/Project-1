@@ -128,10 +128,3 @@ def get_stocks_price(stock: str) -> float:
     except (KeyError, TypeError) as e:
         utils_logger.error(f"Ошибка данных транзакции: {e} в функции get_stocks_price")
         print(f"Ошибка данных транзакции: {e}")
-
-
-# if __name__ == "__main__":
-#     print(top_5_transactions(read_excel_file(), '2021-12-01 14:12:12', '2021-12-12 14:12:12'))
-#     print(find_beginning_date(date_str_in_date('2024-12-12 14:12:12')))
-#     print(get_exchange_rate("usd"))
-#     print(get_stocks_price("googl"))

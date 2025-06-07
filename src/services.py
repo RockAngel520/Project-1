@@ -33,7 +33,3 @@ def search_word_in_operations(search_word: str) -> pd.DataFrame | None:
             f"Ошибка при чтении файла {PATH_OPERATIONS}: {str(e)} в функции search_word_in_operations"
         )
         print(f"Ошибка при чтении файла {PATH_OPERATIONS}: {str(e)}")
-
-
-# if __name__ == "__main__":
-#     print(search_word_in_operations("газпромбанк"))

@@ -94,18 +94,3 @@ def spending_by_category(transactions: pd.DataFrame, category: str, date: Option
     df_sum_in_category = df_in_date.groupby("Категория")
     sum_transactions_in_category = df_sum_in_category["Сумма платежа"].sum()
     return sum_transactions_in_category
-
-
-# def read_excel_file() -> pd.DataFrame | None:
-#     "Функция чтения Excel-файла"
-#     try:
-#         with open(PATH_OPERATIONS, "rb") as excel_file:
-#             df = pd.read_excel(excel_file)
-#             df = df.where(pd.notnull(df), None)
-#             df["Дата операции"] = pd.to_datetime(df["Дата операции"], dayfirst=True)
-#             return df
-#     except (FileNotFoundError, PermissionError) as e:
-#         print(f"Ошибка при чтении файла {PATH_OPERATIONS}: {str(e)}")
-#
-# if __name__ == "__main__":
-#     print(spending_by_category(read_excel_file(), "Книги", "2021-05-29 14:12:12"))
